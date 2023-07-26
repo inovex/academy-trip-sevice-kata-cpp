@@ -1,4 +1,5 @@
 #include "TripService.h"
+#include "UserBuilder.h"
 #include "gtest/gtest.h"
 
 class UserTests : public ::testing::Test
@@ -22,17 +23,15 @@ protected:
 
 TEST_F(UserTests, IsFriendWith_NoFriends_ReturnsFalse)
 {
-  User user(5);
-  user.AddFriend(*Paul.get());
+  User user = UserBuilder::aUser()->FriendsWith(1, Paul.get())->Build();
 
   ASSERT_FALSE(user.IsFriendWith(Bob));
 }
 
 TEST_F(UserTests, IsFriendWith_AFriend_ReturnsTrue)
 {
-  User user(5);
-  user.AddFriend(*Paul.get());
-  user.AddFriend(*Bob.get());
+  User user =
+      UserBuilder::aUser()->FriendsWith(2, Paul.get(), Bob.get())->Build();
 
   ASSERT_TRUE(user.IsFriendWith(Bob));
 }
