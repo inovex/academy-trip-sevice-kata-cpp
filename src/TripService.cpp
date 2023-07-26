@@ -14,14 +14,9 @@ list<Trip> TripService::GetTripsByUser(shared_ptr<User> user,
   }
   if (user->IsFriendWith(loggedInUser))
   {
-    return TripsByUser(user);
+    return tripDao->TripsByUser(user);
   }
   return *new std::list<Trip>;
-}
-
-list<Trip> TripService::TripsByUser(shared_ptr<User> user)
-{
-  return TripDAO::FindTripsByUser(user);
 }
 
 void TripService::BuildCheck() { cout << "Built and runnable!" << endl; }

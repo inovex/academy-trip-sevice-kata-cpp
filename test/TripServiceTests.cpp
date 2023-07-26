@@ -3,10 +3,13 @@
 #include "gtest/gtest.h"
 #include <memory>
 
-class TestableTripService : public TripService
+class TripDAOMock : public TripDAO
 {
 public:
-  list<Trip> TripsByUser(shared_ptr<User> user) { return user->Trips(); }
+  virtual const std::list<Trip> TripsByUser(shared_ptr<User> user)
+  {
+    return user->Trips();
+  }
 };
 
 class TripServiceTests : public ::testing::Test
@@ -15,7 +18,8 @@ protected:
   virtual void SetUp()
   {
     registerdUser = make_shared<User>(5);
-    tripService = make_shared<TestableTripService>();
+    tripDAO = std::make_shared<TripDAOMock>();
+    tripService = std::make_shared<TripService>(tripDAO);
     anotherUser = make_shared<User>(20);
   }
 
@@ -26,7 +30,8 @@ protected:
     anotherUser.reset();
   }
 
-  shared_ptr<TestableTripService> tripService;
+  shared_ptr<TripDAO> tripDAO;
+  shared_ptr<TripService> tripService;
   shared_ptr<User> registerdUser;
   shared_ptr<User> guest = nullptr;
   shared_ptr<User> anotherUser;
