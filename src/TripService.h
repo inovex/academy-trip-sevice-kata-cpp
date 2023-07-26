@@ -16,4 +16,5 @@ public:
 
 protected:
   virtual shared_ptr<User> LoggedInUser();
+  virtual list<Trip> TripsByUser(shared_ptr<User> user);
 };
