@@ -1,13 +1,14 @@
 #include "TripService.h"
 #include "TripDAO.h"
 #include "UserSession.h"
+#include <memory>
 
 using namespace std;
 
 list<Trip> TripService::GetTripsByUser(shared_ptr<User> user)
 {
   list<Trip> tripList;
-  shared_ptr<User> loggedUser = UserSession::GetInstance()->GetLoggedUser();
+  shared_ptr<User> loggedUser = LoggedInUser();
   bool isFriend = false;
   if (loggedUser)
   {
@@ -30,6 +31,11 @@ list<Trip> TripService::GetTripsByUser(shared_ptr<User> user)
   {
     throw UserNotLoggedInException("UserNotLoggedInException");
   }
+}
+
+shared_ptr<User> TripService::LoggedInUser()
+{
+  return UserSession::GetInstance()->GetLoggedUser();
 }
 
 void TripService::BuildCheck() { cout << "Built and runnable!" << endl; }
