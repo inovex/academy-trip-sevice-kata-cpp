@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Trip.h"
+#include "TripDAO.h"
 #include "User.h"
 #include <iostream>
 #include <list>
@@ -11,10 +12,11 @@ using namespace std;
 class TripService
 {
 public:
+  TripService(shared_ptr<TripDAO> _tripDao) : tripDao(_tripDao) {}
   list<Trip> GetTripsByUser(shared_ptr<User> user,
-                            std::shared_ptr<User> loggedInUser);
+                            shared_ptr<User> loggedInUser);
   void BuildCheck();
 
-protected:
-  virtual list<Trip> TripsByUser(shared_ptr<User> user);
+private:
+  std::shared_ptr<TripDAO> tripDao;
 };

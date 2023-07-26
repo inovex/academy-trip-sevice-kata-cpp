@@ -16,4 +16,8 @@ public:
     throw CollaboratorCallException(
         "TripDAO should not be invoked on an unit test.");
   }
+  inline virtual const std::list<Trip> TripsByUser(shared_ptr<User> user)
+  {
+    return TripDAO::FindTripsByUser(user);
+  }
 };
