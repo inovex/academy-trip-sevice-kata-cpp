@@ -7,30 +7,16 @@ using namespace std;
 
 list<Trip> TripService::GetTripsByUser(shared_ptr<User> user)
 {
-  list<Trip> tripList;
   shared_ptr<User> loggedUser = LoggedInUser();
-  bool isFriend = false;
-  if (loggedUser)
-  {
-    list<User>::iterator i;
-    for (i = user->GetFriends().begin(); i != user->GetFriends().end(); ++i)
-    {
-      if (*i == *loggedUser)
-      {
-        isFriend = true;
-        break;
-      }
-    }
-    if (isFriend)
-    {
-      tripList = TripsByUser(user);
-    }
-    return tripList;
-  }
-  else
+  if (!loggedUser)
   {
     throw UserNotLoggedInException("UserNotLoggedInException");
   }
+  if (user->IsFriendWith(loggedUser))
+  {
+    return TripsByUser(user);
+  }
+  return *new std::list<Trip>;
 }
 
 shared_ptr<User> TripService::LoggedInUser()

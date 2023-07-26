@@ -3,6 +3,7 @@
 #include "Trip.h"
 #include <iostream>
 #include <list>
+#include <memory>
 
 using namespace std;
 
@@ -20,6 +21,18 @@ public:
   inline void AddTrip(Trip trip) { trips.push_back(trip); }
 
   inline bool operator==(User &other) { return (other.id == id); }
+
+  inline bool IsFriendWith(shared_ptr<User> user)
+  {
+    for (auto i = friends.begin(); i != friends.end(); ++i)
+    {
+      if (*i == *user.get())
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 
 private:
   int id;
