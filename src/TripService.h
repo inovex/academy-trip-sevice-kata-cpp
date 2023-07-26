@@ -13,4 +13,7 @@ class TripService
 public:
   list<Trip> GetTripsByUser(shared_ptr<User> user);
   void BuildCheck();
+
+protected:
+  virtual shared_ptr<User> LoggedInUser();
 };
