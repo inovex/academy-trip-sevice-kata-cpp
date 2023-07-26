@@ -11,10 +11,10 @@ using namespace std;
 class TripService
 {
 public:
-  list<Trip> GetTripsByUser(shared_ptr<User> user);
+  list<Trip> GetTripsByUser(shared_ptr<User> user,
+                            std::shared_ptr<User> loggedInUser);
   void BuildCheck();
 
 protected:
-  virtual shared_ptr<User> LoggedInUser();
   virtual list<Trip> TripsByUser(shared_ptr<User> user);
 };

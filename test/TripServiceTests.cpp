@@ -6,8 +6,6 @@
 class TestableTripService : public TripService
 {
 public:
-  shared_ptr<User> loggedInUser;
-  shared_ptr<User> LoggedInUser() { return loggedInUser; }
   list<Trip> TripsByUser(shared_ptr<User> user) { return user->Trips(); }
 };
 
@@ -18,7 +16,6 @@ protected:
   {
     registerdUser = make_shared<User>(5);
     tripService = make_shared<TestableTripService>();
-    tripService->loggedInUser = registerdUser;
     anotherUser = make_shared<User>(20);
   }
 
@@ -39,10 +36,10 @@ protected:
 
 TEST_F(TripServiceTests, GetTripsByUser_Guest_ThrowsException)
 {
-  tripService->loggedInUser = guest;
   auto anyUser = make_shared<User>(5);
 
-  ASSERT_THROW(tripService->GetTripsByUser(anyUser), UserNotLoggedInException);
+  ASSERT_THROW(tripService->GetTripsByUser(anyUser, guest),
+               UserNotLoggedInException);
 }
 
 TEST_F(TripServiceTests, GetTripsByUser_NotFriends_ReturnsNoTrips)
@@ -51,7 +48,7 @@ TEST_F(TripServiceTests, GetTripsByUser_NotFriends_ReturnsNoTrips)
   stranger->AddFriend(*anotherUser);
   stranger->AddTrip(london);
 
-  std::list<Trip> trips = tripService->GetTripsByUser(stranger);
+  std::list<Trip> trips = tripService->GetTripsByUser(stranger, registerdUser);
 
   ASSERT_TRUE(trips.empty());
 }
@@ -64,7 +61,8 @@ TEST_F(TripServiceTests, GetTripsByUser_Friends_ReturnsTrips)
   usersFriend->AddTrip(london);
   usersFriend->AddTrip(paris);
 
-  std::list<Trip> trips = tripService->GetTripsByUser(usersFriend);
+  std::list<Trip> trips =
+      tripService->GetTripsByUser(usersFriend, registerdUser);
 
   ASSERT_EQ(trips.size(), 2);
 }

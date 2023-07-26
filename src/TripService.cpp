@@ -5,23 +5,18 @@
 
 using namespace std;
 
-list<Trip> TripService::GetTripsByUser(shared_ptr<User> user)
+list<Trip> TripService::GetTripsByUser(shared_ptr<User> user,
+                                       std::shared_ptr<User> loggedInUser)
 {
-  shared_ptr<User> loggedUser = LoggedInUser();
-  if (!loggedUser)
+  if (!loggedInUser)
   {
     throw UserNotLoggedInException("UserNotLoggedInException");
   }
-  if (user->IsFriendWith(loggedUser))
+  if (user->IsFriendWith(loggedInUser))
   {
     return TripsByUser(user);
   }
   return *new std::list<Trip>;
-}
-
-shared_ptr<User> TripService::LoggedInUser()
-{
-  return UserSession::GetInstance()->GetLoggedUser();
 }
 
 list<Trip> TripService::TripsByUser(shared_ptr<User> user)
