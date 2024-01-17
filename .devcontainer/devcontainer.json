@@ -8,7 +8,9 @@
 			"extensions": [
 				"ms-vscode.cpptools-extension-pack",
 				"matepek.vscode-catch2-test-adapter",
-				"tomoki1207.pdf"
+				"tomoki1207.pdf",
+				"ryanluker.vscode-coverage-gutters",
+				"microsoft/vscode-livepreview"
 			]
 		}
 	}

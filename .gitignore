@@ -16,3 +16,7 @@ bin
 trip_service_test
 trip_service_run
 libtrip_service_lib.a
+
+coverage
+lcov_base.info
+lcov.info

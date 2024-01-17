@@ -10,3 +10,11 @@ TEST(TripService, GetTripsByUser_Guest_ThrowsException)
 
   ASSERT_THROW(tripService.GetTripsByUser(Tom), UserNotLoggedInException);
 }
+
+TEST(TripService, Test)
+{
+  auto Tom = make_shared<User>(5);
+  TripService tripService;
+
+  tripService.BuildCheck();
+}

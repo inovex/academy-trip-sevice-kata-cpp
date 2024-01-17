@@ -1,5 +1,13 @@
 {
 	"version": "2.0.0",
+	"inputs": [
+		{
+			"id": "coverageHtmlFolder",
+			"type": "promptString",
+			"description": "Select folder for coverage HTML report",
+			"default": "${workspaceFolder}/coverage"
+		}
+	],
 	"tasks": [
 		{
 			"type": "cmake",
@@ -14,6 +22,131 @@
 			},
 			"problemMatcher": [],
 			"detail": "CMake template build task"
+		},
+		{
+			"label": "Coverage: clean",
+			"type": "shell",
+			"command": "rm",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"args": [
+				"-rf",
+				"lcov.info",
+				"lcov_base.info",
+				"${workspaceFolder}/coverage"
+			]
+		},
+		{
+			"label": "Coverage: create baseline",
+			"type": "shell",
+			"dependsOn": [
+				"Coverage: clean"
+			],
+			"command": "lcov",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"args": [
+				"--capture",
+				"--initial",
+				"--directory",
+				".",
+				"--output-file",
+				"lcov_base.info",
+				"--rc",
+				"lcov_branch_coverage=1",
+				"--no-external"
+			],
+		},
+		{
+			"label": "Coverage: generate",
+			"type": "shell",
+			"command": "lcov",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"args": [
+				"--capture",
+				"--directory",
+				".",
+				"--output-file",
+				"lcov.info",
+				"--rc",
+				"lcov_branch_coverage=1"
+			],
+		},
+		{
+			"label": "Coverage: combine baseline",
+			"type": "shell",
+			"dependsOn": [
+				"Coverage: generate"
+			],
+			"command": "lcov",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"args": [
+				"--add-tracefile",
+				"lcov_base.info",
+				"--add-tracefile",
+				"lcov.info",
+				"--output-file",
+				"lcov.info",
+				"--rc",
+				"lcov_branch_coverage=1"
+			],
+		},
+		{
+			"label": "Coverage: filter",
+			"type": "shell",
+			"command": "lcov",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"dependsOn": [
+				"Coverage: combine baseline"
+			],
+			"args": [
+				"--remove",
+				"lcov.info",
+				"'${workspaceFolder}/build/*'",
+				"--output-file",
+				"lcov.info",
+				"--rc",
+				"lcov_branch_coverage=1"
+			]
+		},
+		{
+			"label": "Coverage: genhtml",
+			"type": "shell",
+			"command": "genhtml",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"dependsOn": [
+				"Coverage: filter"
+			],
+			"args": [
+				"lcov.info",
+				"-o",
+				"${workspaceFolder}/coverage",
+				"--branch-coverage"
+			]
+		},
+		{
+			"label": "Coverage: generate report & open in browser",
+			"dependsOn": [
+				"Coverage: genhtml"
+			],
+			"type": "shell",
+			"command": "firefox",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"args": [
+				"${input:coverageHtmlFolder}/index.html"
+			],
 		}
 	]
 }
